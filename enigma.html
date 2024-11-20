@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Matrix Transmission</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: black;
+            color: #00FF41;
+            font-family: 'Courier New', monospace;
+        }
+        .matrix-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .question-mark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00FF41;
+            opacity: 0.3;
+            font-size: 80vw;
+            z-index: 1;
+            text-shadow: 
+                0 0 20px #00FF41,
+                0 0 40px #00FF41,
+                0 0 60px #00FF41,
+                0 0 80px #00FF41;
+            user-select: none;
+            pointer-events: none;
+            font-weight: bold;
+        }
+        .message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-size: 1.5vw;
+            text-shadow: 0 0 10px #00FF41;
+            max-width: 80%;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <canvas class="matrix-background" id="matrixCanvas"></canvas>
+    <div class="question-mark">?</div>
+    <div class="message">
+        If you are reading this congrats for thinking outside the box.<br>
+        The time to act is now.<br>
+        If not, you will be opted to submit by "them".<br>
+        See you soon...
+    </div>
+
+    <script>
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const characters = '01';
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+
+        const rainDrops = [];
+        for (let x = 0; x < columns; x++) {
+            rainDrops[x] = Math.floor(Math.random() * canvas.height);
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#00FF41';
+            ctx.font = `${fontSize}px monospace`;
+
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+                
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        }
+
+        function animate() {
+            drawMatrix();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
